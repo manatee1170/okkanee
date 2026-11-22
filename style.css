@@ -1,0 +1,735 @@
+/* =========================================================
+   家計簿 — スタイル
+   色・文字は :root の変数でまとめて管理しています。
+   ここを書き換えるとアプリ全体が変わります。
+   ========================================================= */
+:root {
+  /* 色（iPhoneの標準色に近い値） */
+  --bg: #F5F5F7;                       /* 背景 */
+  --card: #FFFFFF;                     /* カード */
+  --text: #1C1C1E;                     /* 文字 */
+  /* 文字の色は、背景とのコントラスト比 4.5:1 以上になるようにしています */
+  --text2: rgba(60, 60, 67, .78);      /* 補助の文字 */
+  --text3: rgba(60, 60, 67, .30);      /* さらに薄い（飾りの線や入力欄の見本だけに使う） */
+  --sep: rgba(60, 60, 67, .18);        /* 区切り線 */
+  --fill: rgba(120, 120, 128, .12);    /* 薄い塗り */
+  --accent: #F5A623;                   /* アクセント（アンバー）：塗りに使う色 */
+  --on-accent: #1C1C1E;                /* アクセント色の上に載せる文字・記号 */
+  --accent-ink: #EB9321;             /* 押せる文字・選択中のタブ（ホームアプリのような明るいオレンジ寄りのアンバー。太字で使う） */
+  --accent-soft: rgba(245, 166, 35, .16);
+  --danger: #D70015;
+
+  /* ジャンル・支払い方法の色（iPhone の標準色。ダークモードでは自動で切り替え） */
+  --sys-red: #FF3B30;
+  --sys-orange: #FF9500;
+  --sys-yellow: #FFCC00;
+  --sys-green: #34C759;
+  --sys-mint: #00C7BE;
+  --sys-teal: #30B0C7;
+  --sys-cyan: #32ADE6;
+  --sys-blue: #007AFF;
+  --sys-indigo: #5856D6;
+  --sys-purple: #AF52DE;
+  --sys-pink: #FF2D55;
+  --sys-brown: #A2845E;
+  --sys-gray: #8E8E93;
+
+  --glass: rgba(255, 255, 255, .75);
+  --glass-edge: rgba(255, 255, 255, .9);
+  --tab-active: rgba(120, 120, 128, .14);
+  --shadow: 0 1px 2px rgba(0, 0, 0, .03), 0 4px 16px rgba(0, 0, 0, .04);
+
+  /* 文字（iPhoneでは San Francisco とヒラギノになります） */
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Segoe UI", "Yu Gothic UI", "Meiryo", sans-serif;
+  /* 金額の数字は、ヘルスケアなどと同じ丸みのある SF Pro Rounded */
+  --font-num: ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  --radius: 14px;          /* カードの角丸（iOSの一覧と同じくらい） */
+  --tabbar-h: 72px;
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #000000;
+    --card: #1C1C1E;
+    --text: #FFFFFF;
+    --text2: rgba(235, 235, 245, .60);
+    --text3: rgba(235, 235, 245, .30);
+    --sep: rgba(84, 84, 88, .65);
+    --fill: rgba(118, 118, 128, .24);
+    --accent: #FFB340;
+    --accent-ink: #FFB340;
+    --on-accent: #1C1C1E;
+    --accent-soft: rgba(255, 179, 64, .18);
+    --danger: #FF6961;
+    --sys-red: #FF453A;
+    --sys-orange: #FF9F0A;
+    --sys-yellow: #FFD60A;
+    --sys-green: #30D158;
+    --sys-mint: #63E6E2;
+    --sys-teal: #40C8E0;
+    --sys-cyan: #64D2FF;
+    --sys-blue: #0A84FF;
+    --sys-indigo: #5E5CE6;
+    --sys-purple: #BF5AF2;
+    --sys-pink: #FF375F;
+    --sys-brown: #AC8E68;
+    --sys-gray: #8E8E93;
+    --glass: rgba(40, 40, 42, .72);
+    --glass-edge: rgba(255, 255, 255, .12);
+    --tab-active: rgba(255, 255, 255, .12);
+    --shadow: none;
+  }
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: var(--font);
+  font-size: 17px;           /* iOS の本文サイズ */
+  line-height: 1.3;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  min-height: 100dvh;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+}
+body.sheet-open { overflow: hidden; }
+
+/* ---------- 背景：上がアンバー、下に向かって薄い灰色に溶ける（全ページ共通） ----------
+   HIG：背景はコンテンツと張り合わない。色の濃い面の上に多色のグラフを載せない。
+   → 色は画面の上だけに淡く入れ、リングやカードが載る所は明るく保つ */
+:root {
+  --glow: rgba(245, 166, 35, .58);
+  --glow-end: rgba(245, 166, 35, .2);
+  --card-glass: rgba(255, 255, 255, .66);   /* 半透明の白いカード（ぼかしなしで軽い） */
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --glow: rgba(255, 179, 64, .28);
+    --glow-end: rgba(255, 179, 64, .07);
+    --card-glass: rgba(44, 44, 46, .62);
+  }
+}
+html { background: var(--bg); }
+body { background: transparent; }
+/* 画面に固定したグラデーション。スクロールしてもオレンジは画面全体に残り、カードがその上を流れる */
+body::before {
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(180deg, var(--glow) 0%, color-mix(in srgb, var(--glow) 55%, var(--glow-end)) 40%, var(--glow-end) 100%);
+}
+
+/* ホーム・履歴のリングはカードに入れず、背景の上にそのまま載せる（同じ役割なので見た目を統一） */
+.ring-card.card { background: transparent; box-shadow: none; padding: 4px 0 18px; }
+.ring-card.hist-ring { padding: 4px 16px 18px; }
+/* 月の切り替え矢印：アンバーの背景の上ではアンバーが沈むので、文字と同じ色に */
+.month-nav .round-btn { color: var(--text); }
+.month-nav .round-btn:disabled { color: var(--text3); }
+/* リングの下地は背景と同化させる（透明）。記録がまだない月だけ、うっすら輪を見せる */
+.ring-card svg > circle:first-child { stroke: transparent; }
+.ring-card svg > circle:only-child { stroke: rgba(255, 255, 255, .6); }
+@media (prefers-color-scheme: dark) {
+  .ring-card svg > circle:only-child { stroke: rgba(255, 255, 255, .14); }
+}
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; text-align: inherit; }
+input { font: inherit; color: inherit; }
+[hidden] { display: none !important; }
+.num { font-family: var(--font-num); font-variant-numeric: tabular-nums; }
+
+/* ---------- 画面の枠 ---------- */
+.view {
+  max-width: 640px;
+  margin: 0 auto;
+  padding:
+    calc(env(safe-area-inset-top) + 8px)
+    16px
+    calc(var(--tabbar-h) + env(safe-area-inset-bottom) + 100px);
+}
+.large-title {               /* iOS の Large Title：34pt Bold */
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 41px;
+  margin: 44px 4px 12px;
+}
+
+/* スクロールすると現れる小さなタイトルバー */
+.navbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 15;
+  display: flex; align-items: center; justify-content: center;
+  height: calc(env(safe-area-inset-top) + 44px);
+  padding-top: env(safe-area-inset-top);
+  font-size: 17px; font-weight: 600;
+  background: var(--glass);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: .5px solid var(--sep);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s;
+}
+body.scrolled .navbar { opacity: 1; }
+
+.card {
+  background: var(--card-glass);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+/* 一覧（区切り線は iOS のように左を空ける） */
+.list { overflow: hidden; }
+.list > * { position: relative; }
+.list > * + *::before {
+  content: "";
+  position: absolute; top: 0; right: 0;
+  left: var(--inset, 16px);
+  border-top: .5px solid var(--sep);
+}
+.list.with-icon { --inset: 58px; }
+
+.section-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  margin: 32px 4px 10px;
+}
+.section-head h2 { font-size: 22px; font-weight: 700; line-height: 28px; }   /* Title 2 */
+/* 見出し＋矢印（ミュージックや App Store の「最近〜 ›」と同じ形） */
+.head-link { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; color: var(--text); }
+.head-link svg { width: 20px; height: 20px; color: var(--sys-gray); margin-top: 2px; stroke-width: 3; }
+.link-btn { color: var(--accent-ink); font-size: 17px; font-weight: 600; padding: 4px 0; }
+.action-row, .text-btn { font-weight: 600; }
+.action-row.danger { font-weight: 400; }
+
+.empty {
+  padding: 40px 24px;
+  text-align: center;
+  color: var(--text2);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* アイコンの四角いタイル */
+.tile {
+  flex: none;
+  display: grid; place-items: center;
+  width: 34px; height: 34px;
+  border-radius: 9px;
+  color: var(--accent-ink);
+  background: var(--accent-soft);
+}
+/* 色付きタイル：設定アプリのような「色の四角＋白いアイコン」 */
+.tile.solid {
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  color: #fff;
+  background: var(--tint);
+}
+.tile.solid svg { width: 19px; height: 19px; }
+.tile svg { width: 20px; height: 20px; }
+
+/* ---------- ホームのリング ---------- */
+.ring-card { padding: 22px 0; margin-bottom: 12px; }
+.ring-card-title { padding: 0 16px 10px; font-size: 17px; font-weight: 600; text-align: center; }
+
+/* 履歴のリング（下に色とジャンル名の見本） */
+.hist-ring { padding: 20px 16px 16px; }
+.legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 14px; margin-top: 14px; }
+.legend-item { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text2); }
+.legend-item i { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+
+/* 横にスワイプできるリング（ページごとにぴたっと止まる） */
+.ring-pager {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+.ring-pager::-webkit-scrollbar { display: none; }
+.ring-page { flex: 0 0 100%; scroll-snap-align: center; padding: 8px 0 4px; }
+
+/* ページの点（iOS のページコントロール） */
+.page-dots { display: flex; justify-content: center; padding-top: 2px; }
+.dot { display: grid; place-items: center; width: 22px; height: 28px; }
+.dot i { width: 8px; height: 8px; border-radius: 50%; background: var(--text3); transition: background .2s; }
+.dot[aria-current="true"] i { background: var(--text); }
+.ring-wrap { position: relative; width: 220px; height: 220px; margin: 0 auto; }
+.ring-wrap svg { width: 100%; height: 100%; display: block; }
+.ring-wrap circle { transition: stroke-dasharray .6s cubic-bezier(.2, .8, .2, 1), stroke-dashoffset .6s cubic-bezier(.2, .8, .2, 1); }
+.ring-center {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.ring-label { font-size: 15px; font-weight: 600; color: var(--text2); }
+.ring-amount {
+  font-family: var(--font-num);
+  font-size: 34px; font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+  margin-top: 2px;
+}
+.ring-amount.small { font-size: 27px; }
+.ring-amount .yen { font-size: .7em; margin-right: 1px; }
+
+/* 今月（大）と今週（小）を横に並べる */
+/* 支払い方法ごとのカード（2列） */
+/* フィットネスアプリのカード風：名前 → 今月 → 色付きの大きな金額 → リング */
+.pay-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.pay-card {
+  --ink: color-mix(in srgb, var(--tint) 68%, #000);   /* 白地でも読める濃さの同系色 */
+  display: flex; flex-direction: column; gap: 12px;
+  width: 100%; padding: 14px 14px 16px; min-width: 0; border-radius: 20px;
+  text-align: left; color: var(--text);
+  transition: transform .15s;
+}
+.pay-card:active { transform: scale(.97); }
+.pay-head { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+.pay-chev { display: grid; place-items: center; width: 26px; height: 26px; flex: none; border-radius: 50%; background: var(--fill); color: var(--text2); }
+.pay-chev svg { width: 14px; height: 14px; }
+/* リングの真ん中に金額 */
+.pay-body { position: relative; width: 120px; height: 120px; margin: 0 auto; }
+.pay-body .mini-ring { width: 100%; height: 100%; display: block; }
+.pay-body .pay-amt {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; line-height: 1;
+  color: var(--text);
+}
+.pay-body .pay-amt.small { font-size: 16px; }
+.pay-name { font-size: 17px; font-weight: 700; line-height: 22px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* 詳細画面の「‹ ホーム」戻るボタン */
+.back-btn {
+  display: inline-flex; align-items: center; gap: 2px;
+  min-height: 44px; margin: 0 0 -6px -8px; padding: 0 8px 0 2px;
+  color: var(--accent-ink); font-size: 17px; font-weight: 600;
+}
+.back-btn svg { width: 24px; height: 24px; }
+.back-btn[hidden] { display: none; }
+.pay-label { margin-top: 8px; font-size: 13px; font-weight: 600; color: var(--text2); }
+.pay-amt {
+  font-family: var(--font-num); font-size: 28px; font-weight: 700; line-height: 34px;
+  font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--ink);
+}
+.pay-amt .yen { font-size: .65em; margin-right: 1px; }
+.pay-foot { display: flex; align-items: center; gap: 10px; margin-top: 14px; }
+.pay-pct { font-size: 13px; color: var(--text2); line-height: 1.3; }
+.pay-pct b { display: block; font-family: var(--font-num); font-size: 17px; color: var(--text); }
+@media (prefers-color-scheme: dark) { .pay-card { --ink: var(--tint); } }
+
+/* 今月のリング＋右に今日・今週の合計 */
+/* 主役のリング：中央に大きく（画面幅の約3分の2）、今日・今週はその下に横並び */
+.ring-pair { display: flex; flex-direction: column; align-items: center; gap: 18px; padding: 0 16px; }
+.ring-wrap.main { width: min(260px, 70vw); height: min(260px, 70vw); margin: 0; flex: none; }
+.ring-wrap.main .ring-label { font-size: 17px; }
+.ring-wrap.main .ring-amount { font-size: 40px; }        /* 画面でいちばん大きい文字 */
+.ring-wrap.main .ring-amount.mid { font-size: 35px; }    /* 6桁 */
+.ring-wrap.main .ring-amount.small { font-size: 29px; }  /* 7桁以上 */
+.ring-side { display: flex; justify-content: center; gap: 56px; text-align: center; }
+.ring-side dt { font-size: 13px; font-weight: 600; color: var(--text2); }
+.ring-side dd {
+  font-family: var(--font-num); font-size: 22px; font-weight: 700; line-height: 28px;
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.ring-side dd .yen { font-size: .7em; margin-right: 1px; }
+
+.banner {
+  display: flex; align-items: center; gap: 12px;
+  width: 100%;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  border-radius: var(--radius);
+  background: var(--card-glass);
+  box-shadow: var(--shadow);
+  font-size: 15px;
+  line-height: 1.45;
+}
+.banner .tile { --tint: var(--accent); }
+.banner b { color: var(--accent-ink); font-weight: 600; }
+
+/* ---------- セグメント切り替え（iOSの Segmented Control） ---------- */
+/* 下のタブバーと同じ「カプセル＋選択中は丸いハイライト」 */
+.segmented {
+  display: flex; gap: 2px;
+  padding: 4px;
+  margin-bottom: 14px;
+  border-radius: 999px;
+  background: var(--card-glass);
+  border: .5px solid var(--glass-edge);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .06), 0 4px 14px rgba(0, 0, 0, .05);
+}
+.segmented button {
+  flex: 1;
+  min-height: 40px;
+  padding: 0 8px;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  text-align: center;
+  transition: background .25s, color .25s;
+}
+.segmented button[aria-pressed="true"] { color: var(--accent-ink); background: var(--tab-active); }
+
+/* ---------- 内訳の行 ---------- */
+.bd-row { display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 9px 16px; }
+.bd-name { flex: 1; min-width: 0; font-size: 17px; }
+.bd-right { text-align: right; }
+.bd-amt { font-family: var(--font-num); font-variant-numeric: tabular-nums; font-size: 17px; }
+.bd-pct { font-family: var(--font-num); font-variant-numeric: tabular-nums; font-size: 13px; color: var(--text2); }
+
+/* ---------- 記録の行 ---------- */
+.entry-row {
+  display: flex; align-items: center; gap: 12px;
+  width: 100%;
+  min-height: 60px;
+  padding: 10px 16px;
+  text-align: left;
+}
+.entry-row:active { background: var(--fill); }
+.entry-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.entry-title { font-size: 17px; }
+.entry-sub { font-size: 13px; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.entry-right { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; }
+.entry-amt { font-family: var(--font-num); font-variant-numeric: tabular-nums; font-size: 17px; font-weight: 500; }
+.entry-date { font-size: 13px; color: var(--text2); }
+
+/* ---------- 履歴 ---------- */
+.month-nav { display: flex; align-items: center; justify-content: space-between; margin: 0 -4px 4px; }
+.month-nav .label { font-size: 17px; font-weight: 600; }
+.round-btn {
+  display: grid; place-items: center;
+  width: 44px; height: 44px;
+  border-radius: 22px;
+  color: var(--accent-ink);
+}
+.round-btn:active { background: var(--fill); }
+.round-btn:disabled { color: var(--text3); }
+.round-btn svg { width: 20px; height: 20px; }
+.month-total {
+  text-align: center;
+  font-family: var(--font-num);
+  font-size: 28px; font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 16px;
+}
+.day-head {
+  display: flex; justify-content: space-between;
+  margin: 22px 16px 6px;
+  font-size: 13px; color: var(--text2);
+}
+.day-head:first-of-type { margin-top: 4px; }
+.day-head { align-items: baseline; }
+.day-head .num { font-family: var(--font-num); font-size: 17px; font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; }
+
+/* ---------- レポートのグラフ（ヘルスケア風） ---------- */
+.chart-card { padding: 16px 16px 12px; }
+.chart-head { margin-bottom: 14px; }
+.chart-head .label { font-size: 13px; font-weight: 600; color: var(--text2); }
+.chart-head .value {
+  font-family: var(--font-num);
+  font-size: 28px; font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.25;
+}
+.chart-head .value .yen { font-size: .65em; margin-right: 1px; }
+.chart-head .sub { font-size: 15px; color: var(--text2); }
+
+.chart { position: relative; height: 180px; margin-right: 36px; }
+.chart .gridline {
+  position: absolute; left: 0; right: -36px;
+  border-top: .5px solid var(--sep);
+}
+.chart .gridline span {
+  position: absolute; right: 0; top: 2px;
+  font-size: 11px; color: var(--text2);
+  font-family: var(--font-num);
+}
+.chart .avg {
+  position: absolute; left: 0; right: 0; z-index: 2;
+  border-top: 1.5px dashed var(--text2);
+  opacity: .7;
+  pointer-events: none;
+}
+.chart .cols {
+  position: absolute; inset: 0;
+  display: flex; gap: 4px;
+}
+.chart .col {
+  flex: 1; min-width: 0;
+  display: flex; align-items: flex-end; justify-content: center;
+  height: 100%;
+}
+.chart .colbar {
+  width: 100%; max-width: 16px;
+  min-height: 2px;
+  border-radius: 4px 4px 1px 1px;
+  background: var(--accent);
+  opacity: .35;
+  transition: opacity .2s;
+}
+.chart .col.selected .colbar { opacity: 1; }
+.chart-x { display: flex; gap: 4px; margin: 6px 36px 0 0; }
+.chart-x span {
+  flex: 1; min-width: 0; text-align: center;
+  font-size: 11px; color: var(--text2);
+  font-family: var(--font-num);
+}
+.chart-x span.selected { color: var(--accent-ink); font-weight: 700; }
+.chart-legend { display: flex; align-items: center; gap: 6px; margin-top: 10px; font-size: 13px; color: var(--text2); }
+.chart-legend i { width: 14px; border-top: 1.5px dashed var(--text2); }
+
+details.month-card > summary {
+  list-style: none;
+  display: flex; align-items: center; gap: 10px;
+  min-height: 48px;
+  padding: 0 16px;
+  cursor: pointer;
+}
+details.month-card > summary::-webkit-details-marker { display: none; }
+.mc-name { flex: 1; font-size: 17px; }
+.mc-total { font-family: var(--font-num); font-variant-numeric: tabular-nums; font-size: 17px; color: var(--text2); }
+.chev { width: 14px; height: 14px; color: var(--text3); transition: transform .2s; flex: none; }
+details[open] .chev { transform: rotate(90deg); }
+.mc-inner { position: relative; padding-bottom: 4px; }
+.mc-inner::before { content: ""; position: absolute; top: 0; left: 16px; right: 0; border-top: .5px solid var(--sep); }
+.sub-title { padding: 14px 16px 2px; font-size: 13px; color: var(--text2); }
+.mc-inner .bd-row { min-height: 48px; }
+
+/* ---------- 設定 ---------- */
+/* 設定の見出し（タイトル3：20pt 太字） */
+.group-title { margin: 30px 4px 8px; font-size: 20px; font-weight: 700; line-height: 25px; color: var(--text); }
+.group-title:first-child { margin-top: 0; }
+.group-head { display: flex; align-items: center; justify-content: space-between; margin: 22px 4px 2px; min-height: 44px; font-size: 20px; font-weight: 700; color: var(--text); }
+.group-head:first-child { margin-top: 0; }
+.group-spacer { height: 28px; }
+.group-head .link-btn { font-size: 15px; min-height: 44px; padding: 0 0 0 12px; }
+.set-row { display: flex; align-items: center; gap: 2px; min-height: 50px; padding: 0 6px 0 16px; position: relative; }
+.set-row .chev { display: grid; place-items: center; width: 28px; color: var(--text3); }
+.set-row .chev svg { width: 14px; height: 14px; }
+.set-row.editing { transition: transform .2s cubic-bezier(.2, .8, .2, 1); }
+.set-row.dragging { background: var(--card); transition: none; z-index: 2; border-radius: 12px; box-shadow: 0 6px 24px rgba(0, 0, 0, .16); }
+.grip { touch-action: none; cursor: grab; color: var(--text3); }
+.grip svg { width: 22px !important; height: 22px !important; }
+.set-row .name { flex: 1; display: flex; align-items: center; gap: 12px; padding: 8px 0; font-size: 17px; text-align: left; }
+.icon-btn { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 10px; color: var(--text2); }
+.icon-btn:active { background: var(--fill); }
+.icon-btn:disabled { opacity: .35; }
+.icon-btn svg { width: 16px; height: 16px; }
+.action-row {
+  display: flex; align-items: center; gap: 12px;
+  width: 100%; min-height: 50px; padding: 0 16px;
+  color: var(--accent-ink); font-size: 17px; text-align: left;
+}
+.action-row:active { background: var(--fill); }
+.action-row.danger { color: var(--danger); }
+.info-row { display: flex; justify-content: space-between; gap: 12px; min-height: 50px; align-items: center; padding: 0 16px; }
+.info-row .v { color: var(--text2); text-align: right; }
+.footnote { margin: 7px 16px 0; font-size: 13px; line-height: 1.5; color: var(--text2); }
+
+/* ---------- 記録ボタン ---------- */
+.fab {
+  position: fixed;
+  right: max(20px, calc(50% - 300px));
+  bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom) + 18px);
+  z-index: 21;
+  display: grid; place-items: center;
+  width: 58px; height: 58px;
+  border-radius: 29px;
+  background: var(--accent);
+  color: var(--on-accent);
+  box-shadow: 0 6px 18px rgba(245, 166, 35, .4);
+  transition: transform .15s;
+}
+.fab:active { transform: scale(.93); }
+.fab svg { width: 26px; height: 26px; }
+
+/* ---------- タブバー（画面下に浮かぶガラスのカプセル） ---------- */
+.tabbar {
+  position: fixed;
+  left: 50%;
+  bottom: calc(env(safe-area-inset-bottom) + 8px);
+  transform: translateX(-50%);
+  width: calc(100% - 40px);
+  max-width: 420px;
+  z-index: 20;
+  display: flex; gap: 2px;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--glass);
+  -webkit-backdrop-filter: saturate(180%) blur(24px);
+  backdrop-filter: saturate(180%) blur(24px);
+  border: .5px solid var(--glass-edge);
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, .10),
+    0 1px 3px rgba(0, 0, 0, .06),
+    inset 0 1px 0 rgba(255, 255, 255, .55);
+}
+.tab {
+  flex: 1;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  height: 56px;
+  border-radius: 999px;
+  font-size: 11px; font-weight: 600;   /* iOS の最小サイズ 11pt */
+  text-align: center;
+  color: var(--text);
+  transition: background .25s, color .25s;
+}
+.tab svg { width: 25px; height: 25px; }
+.tab:active { transform: scale(.96); }
+.tab[aria-current="page"] { color: var(--accent-ink); background: var(--tab-active); }
+.tab[aria-current="page"] span { font-weight: 600; }
+
+/* ---------- 下から出てくるシート ---------- */
+.backdrop {
+  position: fixed; inset: 0; z-index: 30;
+  background: rgba(0, 0, 0, .3);
+  opacity: 0; pointer-events: none;
+  transition: opacity .25s;
+}
+.backdrop.open { opacity: 1; pointer-events: auto; }
+.sheet {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 31;
+  display: flex; flex-direction: column;
+  max-width: 640px; margin: 0 auto;
+  max-height: calc(100dvh - env(safe-area-inset-top) - 16px);
+  border-radius: 20px 20px 0 0;
+  background: var(--bg);
+  transform: translateY(105%);
+  visibility: hidden;
+  transition: transform .32s cubic-bezier(.2, .8, .2, 1), visibility 0s .32s;
+}
+.sheet.open { transform: none; visibility: visible; transition: transform .32s cubic-bezier(.2, .8, .2, 1), visibility 0s; }
+.grabber { width: 36px; height: 5px; margin: 6px auto 0; border-radius: 3px; background: var(--text3); }
+.sheet-header { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 6px 8px; }
+.sheet-header h2 { font-size: 17px; font-weight: 600; }
+.text-btn { justify-self: start; padding: 8px; color: var(--accent-ink); font-size: 17px; }
+.sheet-body {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 8px 16px calc(env(safe-area-inset-bottom) + 24px);
+}
+
+.amount-field {
+  display: flex; align-items: baseline; gap: 6px;
+  padding: 16px 20px;
+  margin: 4px 0 22px;
+  border-radius: var(--radius);
+  background: var(--card);
+}
+.amount-field .yen { font-family: var(--font-num); font-size: 28px; font-weight: 600; color: var(--text2); }
+.amount-field input {
+  flex: 1; min-width: 0;
+  border: 0; outline: none; background: none;
+  text-align: right;
+  font-family: var(--font-num);
+  font-size: 44px; font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.amount-field input::placeholder { color: var(--text3); }
+
+.field-label { margin: 0 16px 7px; font-size: 13px; color: var(--text2); }
+.chip-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 22px; }
+.cat-chip {
+  display: flex; flex-direction: column; align-items: center; gap: 5px;
+  padding: 12px 2px 10px;
+  border-radius: 12px;
+  background: var(--card);
+  font-size: 12px; font-weight: 500;
+  text-align: center;
+  color: var(--text);
+  box-shadow: inset 0 0 0 2px transparent;
+  transition: background .15s, box-shadow .15s;
+}
+.cat-chip svg { width: 26px; height: 26px; color: var(--text2); }
+.chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; }
+.pay-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  min-height: 40px;
+  padding: 0 14px 0 12px;
+  border-radius: 999px;
+  background: var(--card);
+  font-size: 15px;
+  box-shadow: inset 0 0 0 2px transparent;
+  transition: background .15s, box-shadow .15s;
+}
+.pay-chip svg { width: 18px; height: 18px; color: var(--text2); }
+.cat-chip[aria-pressed="true"], .pay-chip[aria-pressed="true"] {
+  background: var(--accent-soft);
+  box-shadow: inset 0 0 0 2px var(--accent);
+  font-weight: 600;
+}
+.cat-chip[aria-pressed="true"] svg, .pay-chip[aria-pressed="true"] svg { color: var(--accent-ink); }
+
+.icon-picker { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-bottom: 22px; padding: 12px; border-radius: var(--radius); background: var(--card); }
+.icon-pick {
+  display: grid; place-items: center;
+  aspect-ratio: 1;
+  border-radius: 10px;
+  color: var(--text2);
+}
+.icon-pick svg { width: 24px; height: 24px; }
+.icon-pick[aria-pressed="true"] { background: var(--tint); color: #fff; }
+
+.color-picker { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin-bottom: 22px; padding: 14px; border-radius: var(--radius); background: var(--card); }
+.color-pick {
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--tint);
+}
+.color-pick[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--card), 0 0 0 5px var(--tint); }
+
+.form-group { margin-bottom: 22px; border-radius: var(--radius); background: var(--card); overflow: hidden; }
+.form-row { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 50px; padding: 0 16px; }
+.form-row + .form-row::before { content: ""; position: absolute; top: 0; left: 16px; right: 0; border-top: .5px solid var(--sep); }
+.form-row > span { flex: none; }
+.form-row input {
+  flex: 1; min-width: 0;
+  border: 0; outline: none; background: none;
+  text-align: right; font-size: 17px;
+  -webkit-appearance: none; appearance: none;
+}
+.form-row input::placeholder { color: var(--text3); }
+.form-row input[type="date"] { min-height: 30px; color: var(--accent-ink); }
+.form-row input::-webkit-date-and-time-value { text-align: right; }
+
+.primary-btn {
+  width: 100%; min-height: 50px;
+  border-radius: var(--radius);
+  background: var(--accent); color: var(--on-accent);
+  font-size: 17px; font-weight: 600;
+  text-align: center;
+  transition: opacity .2s, transform .15s;
+}
+.primary-btn:active { transform: scale(.98); }
+.primary-btn.disabled { opacity: .4; }
+.danger-btn {
+  width: 100%; min-height: 50px; margin-top: 12px;
+  border-radius: var(--radius);
+  background: var(--card); color: var(--danger);
+  font-size: 17px;
+  text-align: center;
+}
+
+/* ---------- お知らせ ---------- */
+.toast {
+  position: fixed; left: 50%; z-index: 50;
+  top: calc(env(safe-area-inset-top) + 10px);
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: var(--glass);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, .12);
+  font-size: 15px; font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translate(-50%, -16px) scale(.96);
+  transition: opacity .25s, transform .25s;
+  pointer-events: none;
+}
+.toast.show { opacity: 1; transform: translate(-50%, 0) scale(1); }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}

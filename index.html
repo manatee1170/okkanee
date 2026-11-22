@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#F5CA82" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#423014" media="(prefers-color-scheme: dark)">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="家計簿">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <link rel="icon" href="icon-192.png">
+  <link rel="manifest" href="manifest.json">
+  <title>家計簿</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-view="home">
+
+  <!-- スクロールすると上に出てくる小さなタイトルバー -->
+  <header class="navbar" aria-hidden="true"><span id="navbar-title">ホーム</span></header>
+
+  <section class="view" id="view-home">
+    <button class="back-btn" id="home-back" data-action="close-pay" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>ホーム
+    </button>
+    <h1 class="large-title" id="home-title">ホーム</h1>
+    <div id="home-content"></div>
+  </section>
+
+  <section class="view" id="view-history" hidden>
+    <h1 class="large-title">履歴</h1>
+    <div id="history-content"></div>
+  </section>
+
+  <section class="view" id="view-report" hidden>
+    <h1 class="large-title">レポート</h1>
+    <div id="report-content"></div>
+  </section>
+
+  <section class="view" id="view-settings" hidden>
+    <h1 class="large-title">設定</h1>
+    <div id="settings-content"></div>
+  </section>
+
+  <!-- 記録ボタン -->
+  <button class="fab" id="fab" data-action="new-entry" aria-label="記録する">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+  </button>
+
+  <!-- タブバー -->
+  <nav class="tabbar" aria-label="メニュー">
+    <button class="tab" data-action="tab" data-view="home" aria-current="page" aria-label="ホーム">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.3 2.6a1.1 1.1 0 0 1 1.4 0l8.2 6.9c.3.2.4.5.4.9V20a1.5 1.5 0 0 1-1.5 1.5h-4.3v-6a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v6H4.2A1.5 1.5 0 0 1 2.7 20v-9.6c0-.4.1-.7.4-.9z"/></svg>
+      <span>ホーム</span>
+    </button>
+    <button class="tab" data-action="tab" data-view="history" aria-label="履歴">
+      <svg viewBox="0 0 24 24" fill="currentColor"><rect x="2.5" y="3.5" width="4.5" height="4.5" rx="1.4"/><rect x="9" y="4.25" width="12.5" height="3" rx="1.5"/><rect x="2.5" y="9.75" width="4.5" height="4.5" rx="1.4"/><rect x="9" y="10.5" width="12.5" height="3" rx="1.5"/><rect x="2.5" y="16" width="4.5" height="4.5" rx="1.4"/><rect x="9" y="16.75" width="12.5" height="3" rx="1.5"/></svg>
+      <span>履歴</span>
+    </button>
+    <button class="tab" data-action="tab" data-view="report" aria-label="レポート">
+      <svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="12" width="4.6" height="9.5" rx="1.6"/><rect x="9.7" y="2.5" width="4.6" height="19" rx="1.6"/><rect x="16.4" y="7.5" width="4.6" height="14" rx="1.6"/></svg>
+      <span>レポート</span>
+    </button>
+    <button class="tab" data-action="tab" data-view="settings" aria-label="設定">
+      <svg viewBox="0 0 24 24" fill="currentColor"><rect x="2.5" y="5.6" width="19" height="2.8" rx="1.4"/><rect x="2.5" y="15.6" width="19" height="2.8" rx="1.4"/><circle cx="15.5" cy="7" r="3.4"/><circle cx="8.5" cy="17" r="3.4"/></svg>
+      <span>設定</span>
+    </button>
+  </nav>
+
+  <div class="backdrop" id="backdrop" data-action="close-sheet"></div>
+
+  <!-- 記録の入力シート -->
+  <div class="sheet" id="entry-sheet" role="dialog" aria-modal="true" aria-labelledby="entry-title">
+    <div class="grabber"></div>
+    <div class="sheet-header">
+      <button class="text-btn" data-action="close-sheet">キャンセル</button>
+      <h2 id="entry-title">記録する</h2>
+      <span></span>
+    </div>
+    <div class="sheet-body">
+      <label class="amount-field">
+        <span class="yen">¥</span>
+        <input id="amount-input" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="0" autocomplete="off" aria-label="金額">
+      </label>
+
+      <div class="field-label">ジャンル</div>
+      <div class="chip-grid" id="category-chips"></div>
+
+      <div class="field-label">支払い方法</div>
+      <div class="chip-row" id="payment-chips"></div>
+
+      <div class="form-group">
+        <label class="form-row"><span>日付</span><input type="date" id="date-input"></label>
+        <label class="form-row"><span>メモ</span><input type="text" id="memo-input" placeholder="任意" enterkeyhint="done" maxlength="60"></label>
+      </div>
+
+      <button class="primary-btn" id="save-entry" data-action="save-entry">保存</button>
+      <button class="danger-btn" id="delete-entry" data-action="delete-entry" hidden>この記録を削除</button>
+    </div>
+  </div>
+
+  <!-- ジャンル・支払い方法の編集シート -->
+  <div class="sheet" id="item-sheet" role="dialog" aria-modal="true" aria-labelledby="item-title">
+    <div class="grabber"></div>
+    <div class="sheet-header">
+      <button class="text-btn" data-action="close-sheet">キャンセル</button>
+      <h2 id="item-title">編集</h2>
+      <span></span>
+    </div>
+    <div class="sheet-body">
+      <div class="form-group">
+        <label class="form-row"><span>名前</span><input type="text" id="item-name" maxlength="12" placeholder="例：外食"></label>
+      </div>
+      <div class="field-label">色</div>
+      <div class="color-picker" id="color-picker"></div>
+      <div class="field-label">アイコン</div>
+      <div class="icon-picker" id="icon-picker"></div>
+      <button class="primary-btn" data-action="save-item">保存</button>
+      <button class="danger-btn" id="delete-item" data-action="delete-item" hidden>削除</button>
+    </div>
+  </div>
+
+  <input type="file" id="import-file" accept=".json,application/json" hidden>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="icons.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
